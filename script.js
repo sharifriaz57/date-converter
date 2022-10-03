@@ -1,13 +1,15 @@
-
 const datePicker = MCDatepicker.create({
     el: '#datepicker',
     bodyType: 'modal',
+    closeOndblclick: false,
     theme: {
         theme_color: '#8abbf9',
         main_background: '#f0f0f0'
     },
     selectedDate: new Date(),
-    dateFormat: 'dd-mmmm-yyyy'
+    dateFormat: 'dd-mmmm-yyyy',
+    customOkBTN: '',
+    customCancelBTN: ''
 });
 
 const input = document.querySelector('#datepicker');
@@ -44,6 +46,11 @@ const convert = (date, month, year) => {
 
     const dateMonth = (date, month) => {
         switch (true) {
+            case month == 1 && date <= 14:
+                bnMonth = 9;
+                bnDate = date + 16;
+                bnSeason = 5;
+                break;
             case month == 1 && date > 14:
                 bnMonth = 10;
                 bnDate = date - 14;
@@ -207,16 +214,22 @@ const convert = (date, month, year) => {
 }
 
 
-
-window.onload = () => {
-    datePicker.open()
-}
-
-datePicker.onSelect(() => {
+const getBengaliDateTime = () => {
     const date = datePicker.getDate();
     const month = datePicker.getMonth() + 1;
     const year = datePicker.getYear();
-
+    
     convert(date, month, year)
-});
+}
 
+window.onload = () => {
+    datePicker.open();
+    document.querySelector('.mc-date--today');
+    getBengaliDateTime();
+}
+
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('mc-date')) {
+        getBengaliDateTime();
+    }
+})
